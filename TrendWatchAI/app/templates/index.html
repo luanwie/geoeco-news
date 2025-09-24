@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}GeoEcoNews - Alertas Econômicos Inteligentes{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1 class="animate-fade-in">Receba alertas econômicos que realmente importam</h1>
+        <p class="animate-fade-in">
+            Monitore mercados, economia e geopolítica com inteligência artificial. 
+            Alertas via WhatsApp apenas para notícias de alto impacto.
+        </p>
+        <div class="hero-cta animate-fade-in">
+            <a href="/signup" class="btn btn-primary btn-lg">
+                <i class="fas fa-rocket"></i> Começar Teste Grátis
+            </a>
+            <a href="/pricing" class="btn btn-secondary btn-lg">
+                <i class="fas fa-crown"></i> Ver Planos
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="container">
+    <div class="features-grid">
+        <div class="feature-card animate-fade-in">
+            <div class="feature-icon">
+                <i class="fas fa-newspaper"></i>
+            </div>
+            <h3>Monitoramento 24/7</h3>
+            <p>Nossos algoritmos analisam constantemente Reuters, G1 Economia e InfoMoney para detectar notícias relevantes</p>
+        </div>
+        
+        <div class="feature-card animate-fade-in">
+            <div class="feature-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h3>Inteligência Artificial</h3>
+            <p>Sistema de pontuação identifica apenas notícias de alto impacto mencionadas em múltiplas fontes</p>
+        </div>
+        
+        <div class="feature-card animate-fade-in">
+            <div class="feature-icon">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <h3>WhatsApp Direto</h3>
+            <p>Alertas formatados e organizados chegam diretamente no seu WhatsApp, onde você já está</p>
+        </div>
+        
+        <div class="feature-card animate-fade-in">
+            <div class="feature-icon">
+                <i class="fas fa-filter"></i>
+            </div>
+            <h3>Filtros Personalizados</h3>
+            <p>Escolha entre Economia, Geopolítica e Mercados. Receba apenas o que é relevante para você</p>
+        </div>
+        
+        <div class="feature-card animate-fade-in">
+            <div class="feature-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h3>Tempo Real</h3>
+            <p>Alertas enviados em até 5 minutos após a publicação. Seja o primeiro a saber</p>
+        </div>
+        
+        <div class="feature-card animate-fade-in">
+            <div class="feature-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>100% Mobile</h3>
+            <p>Interface otimizada para celular. Gerencie tudo direto do seu smartphone</p>
+        </div>
+    </div>
+
+    <!-- Social Proof -->
+    <div class="card text-center my-5">
+        <div class="card-body">
+            <h2 style="color: var(--gray-900);">Mais de 2.500 investidores confiam no GeoEcoNews</h2>
+            <p style="color: var(--gray-600); font-size: 1.125rem;">
+                Desde day traders até gestores de fundos usam nossos alertas para tomar decisões mais rápidas e precisas
+            </p>
+            <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--primary-purple);">2.500+</div>
+                    <div style="color: var(--gray-600);">Usuários ativos</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--primary-purple);">15min</div>
+                    <div style="color: var(--gray-600);">Intervalo de análise</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--primary-purple);">98%</div>
+                    <div style="color: var(--gray-600);">Precisão dos alertas</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--primary-purple);">3</div>
+                    <div style="color: var(--gray-600);">Fontes monitoradas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Preview -->
+    <div class="text-center my-5">
+        <h2 style="color: var(--gray-900); margin-bottom: 1rem;">Planos que cabem no seu bolso</h2>
+        <p style="color: var(--gray-600); font-size: 1.125rem; margin-bottom: 2rem;">
+            Comece grátis e upgrade quando quiser. Sem compromisso.
+        </p>
+        
+        <div class="pricing-cards">
+            <div class="pricing-card">
+                <h3 style="color: var(--gray-700);">Teste Grátis</h3>
+                <div class="plan-price">R$ 0<small style="font-size: 1rem; color: var(--gray-600);">/2 dias</small></div>
+                <ul class="plan-features">
+                    <li>Alertas limitados <span class="feature-check">✓</span></li>
+                    <li>3 categorias básicas <span class="feature-check">✓</span></li>
+                    <li>Suporte por email <span class="feature-check">✓</span></li>
+                </ul>
+                <a href="/signup" class="btn btn-secondary w-100">Começar Agora</a>
+            </div>
+
+            <div class="pricing-card featured-plan">
+                <h3 style="color: var(--gray-700);">Pro Anual</h3>
+                <div class="plan-price">R$ 499<small style="font-size: 1rem; color: var(--gray-600);">/ano</small></div>
+                <p style="color: var(--success); font-weight: 600; margin: 0;">Economize R$ 99 + 3 meses grátis</p>
+                <ul class="plan-features">
+                    <li>Alertas ilimitados <span class="feature-check">✓</span></li>
+                    <li>Todas as categorias <span class="feature-check">✓</span></li>
+                    <li>Suporte VIP + WhatsApp <span class="feature-check">✓</span></li>
+                    <li>API exclusiva <span class="feature-check">✓</span></li>
+                </ul>
+                <a href="/pricing" class="btn btn-primary w-100">Ver Detalhes</a>
+            </div>
+
+            <div class="pricing-card">
+                <h3 style="color: var(--gray-700);">Pro Mensal</h3>
+                <div class="plan-price">R$ 49<small style="font-size: 1rem; color: var(--gray-600);">/mês</small></div>
+                <ul class="plan-features">
+                    <li>Alertas ilimitados <span class="feature-check">✓</span></li>
+                    <li>Todas as categorias <span class="feature-check">✓</span></li>
+                    <li>Suporte prioritário <span class="feature-check">✓</span></li>
+                </ul>
+                <a href="/pricing" class="btn btn-secondary w-100">Assinar Mensal</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Final -->
+    <div class="text-center my-5">
+        <div class="card" style="background: var(--purple-gradient); color: var(--white); padding: 3rem;">
+            <h2 style="color: var(--white); margin-bottom: 1rem;">Pronto para ficar à frente do mercado?</h2>
+            <p style="color: var(--gray-100); font-size: 1.125rem; margin-bottom: 2rem;">
+                Junte-se aos milhares de investidores que já usam GeoEcoNews para tomar decisões mais inteligentes
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/signup" class="btn" style="background: var(--white); color: var(--primary-purple); font-weight: 600;">
+                    <i class="fas fa-rocket"></i> Começar Teste Grátis
+                </a>
+                <a href="/pricing" class="btn" style="background: transparent; color: var(--white); border: 2px solid var(--white);">
+                    <i class="fas fa-info-circle"></i> Saber Mais
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

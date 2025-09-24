@@ -1,0 +1,458 @@
+# 🎨 Prompt para Redesign UI/UX - GeoEcoNews
+
+## Objetivo
+
+Transformar o GeoEcoNews em uma interface moderna, elegante e responsiva usando paleta de cores roxo, preto e branco com design arredondado.
+
+## Paleta de Cores
+
+### **Cores Principais:**
+
+```css
+:root {
+  /* Roxos */
+  --primary-purple: #8B5CF6;
+  --purple-dark: #7C3AED;
+  --purple-light: #A78BFA;
+  --purple-gradient: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  
+  /* Pretos e Cinzas */
+  --black: #000000;
+  --gray-900: #111827;
+  --gray-800: #1F2937;
+  --gray-700: #374151;
+  --gray-600: #4B5563;
+  --gray-300: #D1D5DB;
+  --gray-100: #F3F4F6;
+  
+  /* Branco */
+  --white: #FFFFFF;
+  --off-white: #FAFAFA;
+  
+  /* Acentos */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+}
+```
+
+## Design System
+
+### **Tipografia:**
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+h1 { font-size: 2.5rem; font-weight: 700; color: var(--gray-900); }
+h2 { font-size: 2rem; font-weight: 600; color: var(--gray-800); }
+h3 { font-size: 1.5rem; font-weight: 600; color: var(--gray-700); }
+body { font-size: 1rem; font-weight: 400; color: var(--gray-600); line-height: 1.6; }
+```
+
+### **Elementos Base:**
+
+```css
+/* Reset e Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--off-white);
+  color: var(--gray-600);
+}
+
+/* Container Principal */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Cards Universais */
+.card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1), 0 10px 10px -5px rgba(139, 92, 246, 0.04);
+  transform: translateY(-2px);
+}
+```
+
+## Components Específicos
+
+### **Header/Navbar:**
+
+```css
+.navbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-100);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--purple-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-links a {
+  color: var(--gray-600);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.nav-links a:hover {
+  background: var(--purple-light);
+  color: var(--white);
+}
+```
+
+### **Botões:**
+
+```css
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.btn-primary {
+  background: var(--purple-gradient);
+  color: var(--white);
+  box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.39);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--primary-purple);
+  border: 2px solid var(--primary-purple);
+}
+
+.btn-secondary:hover {
+  background: var(--primary-purple);
+  color: var(--white);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--gray-600);
+  border: 1px solid var(--gray-300);
+}
+
+.btn-ghost:hover {
+  background: var(--gray-100);
+}
+```
+
+### **Forms:**
+
+```css
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gray-300);
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: var(--white);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+```
+
+## Landing Page Específica
+
+### **Hero Section:**
+
+```css
+.hero {
+  background: linear-gradient(135deg, var(--gray-900) 0%, var(--purple-dark) 100%);
+  color: var(--white);
+  padding: 4rem 0;
+  text-align: center;
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  color: var(--gray-300);
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+```
+
+### **Features Grid:**
+
+```css
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
+.feature-icon {
+  width: 4rem;
+  height: 4rem;
+  background: var(--purple-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: var(--white);
+  font-size: 1.5rem;
+}
+```
+
+## Dashboard Específico
+
+### **Sidebar:**
+
+```css
+.dashboard {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 100vh;
+  background: var(--off-white);
+}
+
+.sidebar {
+  background: var(--white);
+  border-right: 1px solid var(--gray-100);
+  padding: 2rem 1rem;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  color: var(--gray-600);
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background: var(--purple-gradient);
+  color: var(--white);
+}
+```
+
+### **Stats Cards:**
+
+```css
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border-left: 4px solid var(--primary-purple);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.stat-label {
+  color: var(--gray-600);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+```
+
+## Responsividade
+
+### **Media Queries:**
+
+```css
+/* Tablet */
+@media (max-width: 768px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    display: none;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .hero {
+    padding: 2rem 0;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+```
+
+## Animações e Micro-interações
+
+### **Animations:**
+
+```css
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Loading States */
+.loading {
+  background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+```
+
+## Dark Mode Support (Opcional)
+
+### **Dark Theme Variables:**
+
+```css
+[data-theme="dark"] {
+  --background: var(--gray-900);
+  --surface: var(--gray-800);
+  --text: var(--gray-100);
+}
+```
+
+Aplique este design system em todas as páginas do GeoEcoNews, mantendo consistência visual e garantindo uma experiência moderna e profissional.​​​​​​​​​​​​​​​​

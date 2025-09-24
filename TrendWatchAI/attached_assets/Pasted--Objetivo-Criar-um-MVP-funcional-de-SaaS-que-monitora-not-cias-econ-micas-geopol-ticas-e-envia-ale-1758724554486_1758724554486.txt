@@ -1,0 +1,75 @@
+
+Objetivo
+Criar um MVP funcional de SaaS que monitora notícias econômicas/geopolíticas e envia alertas via WhatsApp.
+Core Features do MVP
+1. Landing Page Simples
+
+Header com logo e navegação
+Seção hero: "Receba notícias econômicas em tempo real no WhatsApp"
+Formulário de cadastro (nome, email, telefone)
+Pricing simples: 2 dias gratuito | Pro (R$49.99/mês - ilimitado) | Pro Anual (R$499,90 - Acesso por um ano - ilimitado)
+Integração com Stripe
+
+2. Dashboard Básico
+
+Login/logout
+Configurações do usuário:
+
+Número do WhatsApp
+Categorias: ☑️ Economia ☑️ Geopolítica ☑️ Mercados
+
+
+Histórico de últimos 10 alertas enviados
+Status da conta (Gratuito/Pro) - Gerenciar assinatura no stripe
+
+3. Engine de Notícias
+
+Coleta a cada 15 minutos
+Filtro por palavras-chave: "economia", "mercado", "geopolítica", "eleição", "guerra", "inflação", etc.
+Score simples: Alto impacto = menção em 2+ fontes -> enviar para o numero de whatsapp somente noticias relevantes. Se não houver noticia relevante, não enviar.
+
+4. WhatsApp Integration
+
+Twilio API para envio
+Formato da mensagem:
+
+🚨 ALERT ECONÔMICO
+
+📈 [TÍTULO EM NEGRITO E MAIUSCULO] - [CATEGORIA]
+
+💬 [Resumo de 3 linhas]
+🔗 [Link]
+⏰ [Horário da notícia]
+
+5. Backend Mínimo
+Stack: Python + FastAPI + SQLite + HTML/CSS/JS vanilla
+Estrutura:
+/app
+  /templates (HTML pages)
+  /static (CSS/JS)
+  main.py (FastAPI app)
+  models.py (User, Alert, News)
+  scraper.py (News collection)
+  whatsapp.py (Message sending)
+Funcionalidades Essenciais
+Cadastro: Nome, email, senha, telefone → Verificação SMS → Dashboard
+News Scraper: Roda em background, salva notícias relevantes no banco
+Alert System: Processa notícias → Filtra por preferências do usuário → Envia WhatsApp
+Rate Limiting: 2 dias gratis para free, ilimitado para Pro - Pro 1 ano renova a cada 12 meses
+
+Páginas Necessárias
+
+/ - Landing page
+/signup - Cadastro
+/login - Login
+/dashboard - Painel do usuário
+/settings - Configurações
+
+APIs Externas
+Twilio ($0.0075 por SMS)
+Stripe (para pagamentos Pro)
+
+Banco de Dados Simples
+sqlusers: id, name, email, phone, plan, created_at
+alerts: id, user_id, title, content, category, sent_at
+categories: id, user_id, economy, geopolitics, markets

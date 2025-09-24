@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GeoEcoNews{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/design-system.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/">📊 GeoEcoNews</a>
+            <div class="navbar-nav">
+                {% if user %}
+                    <a class="nav-link" href="/dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="/pricing">
+                        <i class="fas fa-crown"></i> Planos
+                    </a>
+                    <a class="nav-link" href="/settings">
+                        <i class="fas fa-cog"></i> Configurações
+                    </a>
+                    <a class="nav-link" href="/logout">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </a>
+                {% else %}
+                    <a class="nav-link" href="/pricing">
+                        <i class="fas fa-crown"></i> Planos
+                    </a>
+                    <a class="nav-link" href="/login">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a class="btn btn-primary" href="/signup">
+                        <i class="fas fa-user-plus"></i> Cadastro Grátis
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer style="background: var(--gray-900); color: var(--white); text-align: center; padding: 2rem 0; margin-top: 4rem;">
+        <div class="container">
+            <div style="margin-bottom: 1rem;">
+                <a href="/" style="color: var(--white); text-decoration: none; margin: 0 1rem;">
+                    <i class="fas fa-home"></i> Início
+                </a>
+                <a href="/pricing" style="color: var(--white); text-decoration: none; margin: 0 1rem;">
+                    <i class="fas fa-tags"></i> Preços
+                </a>
+                <a href="mailto:contato@geoeco.news" style="color: var(--white); text-decoration: none; margin: 0 1rem;">
+                    <i class="fas fa-envelope"></i> Contato
+                </a>
+            </div>
+            <p style="margin: 0; color: var(--gray-300);">
+                &copy; 2025 GeoEcoNews. Alertas econômicos inteligentes.
+            </p>
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: var(--gray-600);">
+                Feito com <span style="color: var(--primary-purple);">♥</span> para investidores brasileiros
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

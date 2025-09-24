@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Login - GeoEcoNews{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 4rem 1.5rem; max-width: 500px;">
+    <div class="card animate-fade-in">
+        <div class="card-header text-center" style="background: var(--purple-gradient); color: var(--white); border-radius: 16px 16px 0 0;">
+            <i class="fas fa-sign-in-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <h3 style="color: var(--white); margin: 0;">Bem-vindo de Volta</h3>
+            <p style="color: var(--gray-100); margin: 0.5rem 0 0 0; font-size: 0.875rem;">Acesse sua conta</p>
+        </div>
+                <div class="card-body">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endif %}
+                    
+                    <form method="POST">
+                        {% if next_url %}
+                        <input type="hidden" name="next" value="{{ next_url }}">
+                        {% endif %}
+                        {% if plan %}
+                        <input type="hidden" name="plan" value="{{ plan }}">
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <p>Não tem uma conta? 
+                        <a href="/signup{% if next_url or plan %}?{% endif %}{% if next_url %}next={{ next_url }}{% endif %}{% if next_url and plan %}&{% endif %}{% if plan %}plan={{ plan }}{% endif %}">Criar conta</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

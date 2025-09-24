@@ -1,0 +1,83 @@
+Prompt para Replit - Validação de Número WhatsApp
+Objetivo
+Modificar formulário de cadastro para capturar número WhatsApp no formato correto (5551999416575) e validar entrada.
+Implementação
+1. Campo no Formulário de Cadastro:
+html<div class="form-group">
+    <label for="whatsapp">Número WhatsApp</label>
+    <input 
+        type="tel" 
+        id="whatsapp" 
+        name="whatsapp"
+        placeholder="5551999999999"
+        pattern="55[1-9][1-9][0-9]{8,9}"
+        maxlength="13"
+        required
+    >
+    <small>Formato: 55 + DDD + número (sem espaços ou símbolos)</small>
+</div>
+2. Validação JavaScript:
+javascriptfunction validateWhatsApp(number) {
+    // Remove todos os caracteres não numéricos
+    const cleaned = number.replace(/\D/g, '');
+    
+    // Valida formato brasileiro: 55 + DDD + número (11 ou 12 dígitos total)
+    const regex = /^55[1-9][1-9][0-9]{8,9}$/;
+    
+    if (!regex.test(cleaned)) {
+        alert('Formato inválido. Use: 5551999999999');
+        return false;
+    }
+    
+    return cleaned;
+}
+
+// Aplicar no formulário
+document.getElementById('whatsapp').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/\D/g, '');
+});
+3. Validação Backend (Python):
+pythonimport re
+
+def validate_whatsapp_number(number):
+    # Remove caracteres não numéricos
+    clean_number = re.sub(r'\D', '', number)
+    
+    # Valida formato brasileiro
+    if not re.match(r'^55[1-9][1-9][0-9]{8,9}$', clean_number):
+        return None
+    
+    return clean_number
+
+# No endpoint de cadastro
+@app.route('/signup', methods=['POST'])
+def signup():
+    whatsapp = request.form.get('whatsapp')
+    validated_number = validate_whatsapp_number(whatsapp)
+    
+    if not validated_number:
+        flash('Número WhatsApp inválido')
+        return redirect('/signup')
+    
+    # Salvar validated_number no banco
+    user.whatsapp = validated_number
+4. Função de Envio WaSenderAPI:
+pythondef send_whatsapp_alert(user_whatsapp, message):
+    response = requests.post('https://wasenderapi.com/api/send-message',
+        headers={'Authorization': f'Bearer {os.environ["WASENDER_API_KEY"]}'},
+        json={
+            'to': user_whatsapp,  # Já no formato correto
+            'text': message
+        }
+    )
+    return response.json()
+5. Exemplos de Validação:
+python# Entradas que serão aceitas e convertidas:
+"+55 (51) 99999-9999" → "5551999999999"
+"55 51 99999-9999"    → "5551999999999" 
+"5551999999999"       → "5551999999999"
+
+# Entradas rejeitadas:
+"51999999999"  # Sem código do país
+"5500999999999" # DDD inválido
+"abc123"       # Caracteres inválidos

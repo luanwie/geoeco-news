@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastro - GeoEcoNews{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 4rem 1.5rem; max-width: 500px;">
+    <div class="card animate-fade-in">
+        <div class="card-header text-center" style="background: var(--purple-gradient); color: var(--white); border-radius: 16px 16px 0 0;">
+            <i class="fas fa-user-plus" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <h3 style="color: var(--white); margin: 0;">Criar Conta</h3>
+            <p style="color: var(--gray-100); margin: 0.5rem 0 0 0; font-size: 0.875rem;">Comece seu teste gratuito agora</p>
+        </div>
+                <div class="card-body">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endif %}
+                    
+                    <form method="POST">
+                        {% if next_url %}
+                        <input type="hidden" name="next" value="{{ next_url }}">
+                        {% endif %}
+                        {% if plan %}
+                        <input type="hidden" name="plan" value="{{ plan }}">
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nome Completo</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Número WhatsApp</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   placeholder="5551999999999" 
+                                   pattern="55[1-9][0-9]9[0-9]{8}"
+                                   minlength="13"
+                                   maxlength="13"
+                                   required>
+                            <div class="form-text">
+                                <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+                                Formato: 55 + DDD + número (sem espaços ou símbolos)
+                                <br><small>Exemplo: 5551999999999</small>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Criar Conta</button>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <p>Já tem uma conta? 
+                        <a href="/login{% if next_url or plan %}?{% endif %}{% if next_url %}next={{ next_url }}{% endif %}{% if next_url and plan %}&{% endif %}{% if plan %}plan={{ plan }}{% endif %}">Fazer login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function validateWhatsApp(number) {
+    // Remove todos os caracteres não numéricos
+    const cleaned = number.replace(/\D/g, '');
+    
+    // Valida formato brasileiro: 55 + DDD + 9 + 8 dígitos = 13 dígitos total
+    const regex = /^55[1-9][0-9]9[0-9]{8}$/;
+    
+    return regex.test(cleaned) ? cleaned : null;
+}
+
+function formatWhatsAppInput(input) {
+    // Remove caracteres não numéricos
+    input.value = input.value.replace(/\D/g, '');
+    
+    // Limita a 13 dígitos
+    if (input.value.length > 13) {
+        input.value = input.value.slice(0, 13);
+    }
+    
+    // Valida em tempo real
+    const phoneField = input;
+    const isValid = validateWhatsApp(input.value);
+    
+    if (input.value.length >= 10) {
+        if (isValid) {
+            phoneField.style.borderColor = '#28a745';
+            phoneField.style.boxShadow = '0 0 0 0.2rem rgba(40, 167, 69, 0.25)';
+        } else {
+            phoneField.style.borderColor = '#dc3545';
+            phoneField.style.boxShadow = '0 0 0 0.2rem rgba(220, 53, 69, 0.25)';
+        }
+    } else {
+        phoneField.style.borderColor = '';
+        phoneField.style.boxShadow = '';
+    }
+}
+
+// Aplicar validação ao campo de telefone
+document.addEventListener('DOMContentLoaded', function() {
+    const phoneInput = document.getElementById('phone');
+    
+    phoneInput.addEventListener('input', function(e) {
+        formatWhatsAppInput(e.target);
+    });
+    
+    // Validação adicional no submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const phoneValue = phoneInput.value;
+        const validatedNumber = validateWhatsApp(phoneValue);
+        
+        if (!validatedNumber) {
+            e.preventDefault();
+            alert('Formato de WhatsApp inválido. Use: 5551999999999 (55 + DDD + número)');
+            phoneInput.focus();
+            return false;
+        }
+        
+        phoneInput.value = validatedNumber;
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,149 @@
+💎 Prompt para Página de Pricing/Checkout - GeoEcoNews
+Objetivo
+Criar página de pricing estratégica com táticas de conversão para maximizar upgrade de usuários gratuitos para planos Pro.
+Estrutura da Página
+Hero Section
+html<section class="pricing-hero">
+  <h1>Escolha o Plano Ideal para Você</h1>
+  <p>Receba alertas econômicos em tempo real e fique sempre à frente do mercado</p>
+  
+  <!-- Badge de urgência -->
+  <div class="urgency-badge">
+    Oferta Especial: 3 meses GRÁTIS no plano anual
+  </div>
+</section>
+Tabela de Comparação (3 Colunas)
+FeatureGratuitoPro MensalPro AnualPreçoR$ 0R$ 49,99/mêsR$ 499,90/anoEconomia de R$ 99,90Alertas/dia5 limitadosIlimitadosIlimitadosCategorias3 básicasTodas (10+)Todas (10+)VelocidadePadrãoTempo RealTempo RealAnálises IANão incluídoIncluídoIncluídoSuporteEmailPrioritárioVIP + WhatsAppAPI AccessNão incluídoNão incluídoExclusivoRelatóriosNão incluídoSemanaisDiários
+Táticas de Conversão
+1. Escassez Social:
+html<div class="social-proof">
+  +2.847 investidores já upgradearam hoje
+  4.9/5 estrelas (1.234 avaliações)
+</div>
+2. Urgência Temporal:
+html<div class="countdown-timer">
+  Oferta especial termina em: 
+  <span id="countdown">23:59:47</span>
+</div>
+3. Valor Perdido:
+html<div class="loss-aversion">
+  Você perdeu 23 oportunidades de investimento na última semana
+  Usuários Pro tiveram ROI médio 34% maior em 2024
+</div>
+4. Autoridade:
+html<div class="testimonials">
+  "Desde que upgradeei, meus investimentos rendem 40% mais"
+  - João Silva, Day Trader profissional
+  
+  "A velocidade dos alertas me salvou de uma perda de R$ 50.000"
+  - Maria Santos, Gestora de investimentos
+</div>
+5. Garantia:
+html<div class="guarantee">
+  Garantia de 30 dias ou seu dinheiro de volta
+  Cancele quando quiser, sem burocracia
+</div>
+Integração Stripe
+Botões de Checkout:
+javascript// Botão Pro Mensal
+<button onclick="redirectToStripe('price_monthly_49')" class="btn-pro-monthly">
+  Assinar Pro Mensal - R$ 49,99
+  <small>Faturado mensalmente</small>
+</button>
+
+// Botão Pro Anual (DESTACADO)
+<button onclick="redirectToStripe('price_annual_499')" class="btn-pro-annual featured">
+  MELHOR OFERTA: Pro Anual - R$ 499,90
+  <small>Economize R$ 99,90 + 3 meses grátis</small>
+</button>
+Função JavaScript:
+javascriptfunction redirectToStripe(priceId) {
+  // Integração com Stripe Checkout
+  fetch('/create-checkout-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      priceId: priceId,
+      userId: getCurrentUserId()
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    window.location.href = data.checkoutUrl;
+  });
+}
+Elementos Visuais de Conversão
+CSS Destacado:
+css.featured-plan {
+  border: 3px solid #FFD700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  transform: scale(1.05);
+  position: relative;
+}
+
+.featured-plan::before {
+  content: "MAIS POPULAR";
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+Animações de Urgência:
+css@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.urgency-badge {
+  animation: pulse 2s infinite;
+  background: linear-gradient(45deg, #FF4444, #FF6B6B);
+}
+Backend - Rota Stripe
+Endpoint /create-checkout-session:
+python@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    try:
+        data = request.get_json()
+        price_id = data['priceId']
+        
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': price_id,
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url=f'{request.host_url}checkout/success?session_id={{CHECKOUT_SESSION_ID}}',
+            cancel_url=f'{request.host_url}pricing',
+            customer_email=get_user_email(),
+        )
+        
+        return jsonify({'checkoutUrl': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+Táticas Psicológicas Avançadas
+1. Ancoragem:
+"Consultoria financeira custa R$ 500/hora. Nosso Pro Anual sai por R$ 1,37/dia."
+2. Prova Social:
+"Recomendado por 9 em cada 10 analistas financeiros"
+3. Compromisso:
+"Digite seu objetivo financeiro para 2025:" [input field]
+Call-to-Actions Estratégicos
+Principais:
+
+"QUERO SER PRO AGORA"
+"GARANTIR MINHA VANTAGEM"
+"ATIVAR ALERTAS ILIMITADOS"
+
+Secundários:
+
+"Ver demonstração gratuita"
+"Falar com especialista"
+"Comparar com concorrentes"
+
+Implemente essa página com foco em conversão máxima, usando todas as táticas psicológicas de vendas mencionadas.

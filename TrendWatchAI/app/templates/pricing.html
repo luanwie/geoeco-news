@@ -1,0 +1,459 @@
+{% extends "base.html" %}
+
+{% block title %}Planos e Preços - GeoEcoNews{% endblock %}
+
+{% block content %}
+<style>
+.urgency-badge {
+    background: var(--purple-gradient);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 25px;
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.btn-pricing {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.btn-pro-monthly {
+    background: var(--purple-gradient);
+    color: var(--white);
+}
+
+.btn-pro-annual {
+    background: var(--success);
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-pro-annual::after {
+    content: "ECONOMIZE R$ 99,90";
+    position: absolute;
+    top: -25px;
+    right: -25px;
+    background: var(--warning);
+    color: var(--white);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 10px;
+    transform: rotate(25deg);
+}
+
+.btn-free {
+    background: var(--gray-600);
+    color: var(--white);
+}
+
+.btn-pricing:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+}
+
+.social-proof-section {
+    background: var(--white);
+    padding: 2rem;
+    text-align: center;
+    margin: 3rem 0;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.countdown-timer {
+    background: var(--danger);
+    color: var(--white);
+    padding: 20px;
+    text-align: center;
+    border-radius: 12px;
+    margin: 30px 0;
+    font-size: 18px;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+}
+
+.loss-aversion {
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 4px solid var(--warning);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 30px 0;
+}
+
+.testimonials {
+    margin: 50px 0;
+}
+
+.testimonial {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    margin: 20px 0;
+    border-left: 4px solid var(--primary-purple);
+}
+
+.testimonial-author {
+    font-weight: bold;
+    color: var(--primary-purple);
+    margin-top: 15px;
+}
+
+.guarantee {
+    background: rgba(16, 185, 129, 0.1);
+    border-left: 4px solid var(--success);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.featured-column {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+#countdown {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--warning);
+}
+</style>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Escolha o Plano Ideal para Você</h1>
+        <p>Receba alertas econômicos em tempo real e fique sempre à frente do mercado brasileiro</p>
+        
+        <!-- Badge de urgência -->
+        <div class="urgency-badge">
+            <i class="fas fa-fire"></i> Oferta Especial: 3 meses GRÁTIS no plano anual
+        </div>
+    </div>
+</section>
+
+<!-- Social Proof -->
+<div class="container">
+    <div class="social-proof-section">
+        <h3 style="color: var(--gray-900); margin-bottom: 1rem;">
+            <i class="fas fa-users" style="color: var(--success);"></i> +2.847 investidores já upgradearam hoje
+        </h3>
+        <div style="margin-top: 1rem;">
+            <span style="color: var(--warning); font-size: 1.25rem;">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </span>
+            <strong style="color: var(--gray-700); margin-left: 0.5rem;">4.9/5 estrelas (1.234 avaliações)</strong>
+        </div>
+    </div>
+
+    <!-- Countdown Timer -->
+    <div class="countdown-timer">
+        <i class="fas fa-clock"></i>
+        Oferta especial termina em: 
+        <span id="countdown">23:59:47</span>
+    </div>
+
+    <!-- Loss Aversion -->
+    <div class="loss-aversion">
+        <h5><i class="fas fa-exclamation-triangle text-warning"></i> Você perdeu 23 oportunidades de investimento na última semana</h5>
+        <p class="mb-0">Usuários Pro tiveram ROI médio 34% maior em 2024</p>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="pricing-cards">
+        <!-- Free Plan -->
+        <div class="pricing-card">
+            <h3 class="text-center mb-3">Gratuito</h3>
+            <div class="plan-price text-center">R$ 0</div>
+            <p class="text-center text-muted">Teste por 2 dias</p>
+            
+            <ul class="plan-features">
+                <li>Alertas/dia <span class="feature-check">5 limitados</span></li>
+                <li>Categorias <span class="feature-check">3 básicas</span></li>
+                <li>Velocidade <span class="feature-check">Padrão</span></li>
+                <li>Análises IA <span class="feature-cross">✗</span></li>
+                <li>Suporte <span class="feature-check">Email</span></li>
+                <li>API Access <span class="feature-cross">✗</span></li>
+                <li>Relatórios <span class="feature-cross">✗</span></li>
+            </ul>
+            
+            {% if not user %}
+            <a href="/signup" class="btn-pricing btn-free">
+                Começar Grátis
+            </a>
+            {% else %}
+            <button class="btn-pricing btn-free" disabled>
+                Seu plano atual
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Pro Monthly -->
+        <div class="pricing-card">
+            <h3 class="text-center mb-3">Pro Mensal</h3>
+            <div class="plan-price text-center">R$ 49,99<small>/mês</small></div>
+            <p class="text-center text-muted">Faturado mensalmente</p>
+            
+            <ul class="plan-features">
+                <li>Alertas/dia <span class="feature-check">Ilimitados</span></li>
+                <li>Categorias <span class="feature-check">Todas (10+)</span></li>
+                <li>Velocidade <span class="feature-check">Tempo Real</span></li>
+                <li>Análises IA <span class="feature-check">✓</span></li>
+                <li>Suporte <span class="feature-check">Prioritário</span></li>
+                <li>API Access <span class="feature-cross">✗</span></li>
+                <li>Relatórios <span class="feature-check">Semanais</span></li>
+            </ul>
+            
+            {% if user %}
+            <button onclick="redirectToStripe('pro_monthly')" class="btn-pricing btn-pro-monthly">
+                Assinar Pro Mensal - R$ 49,99
+                <br><small>Faturado mensalmente</small>
+            </button>
+            {% else %}
+            <button onclick="redirectToStripe('pro_monthly')" class="btn-pricing btn-pro-monthly">
+                Cadastrar para Pro Mensal
+                <br><small>R$ 49,99/mês - Comece grátis</small>
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Pro Annual (Featured) -->
+        <div class="pricing-card featured-plan">
+            <h3 class="text-center mb-3">Pro Anual</h3>
+            <div class="plan-price text-center">R$ 499,90<small>/ano</small></div>
+            <p class="text-center text-success"><strong>Economize R$ 99,90 + 3 meses grátis</strong></p>
+            
+            <ul class="plan-features">
+                <li>Alertas/dia <span class="feature-check">Ilimitados</span></li>
+                <li>Categorias <span class="feature-check">Todas (10+)</span></li>
+                <li>Velocidade <span class="feature-check">Tempo Real</span></li>
+                <li>Análises IA <span class="feature-check">✓</span></li>
+                <li>Suporte <span class="feature-check">VIP + WhatsApp</span></li>
+                <li>API Access <span class="feature-check">Exclusivo</span></li>
+                <li>Relatórios <span class="feature-check">Diários</span></li>
+            </ul>
+            
+            {% if user %}
+            <button onclick="redirectToStripe('pro_annual')" class="btn-pricing btn-pro-annual">
+                MELHOR OFERTA: Pro Anual - R$ 499,90
+                <br><small>Economize R$ 99,90 + 3 meses grátis</small>
+            </button>
+            {% else %}
+            <button onclick="redirectToStripe('pro_annual')" class="btn-pricing btn-pro-annual">
+                MELHOR OFERTA: Cadastre-se Pro Anual
+                <br><small>Economize R$ 99,90 + teste grátis</small>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <table class="comparison-table">
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Gratuito</th>
+                <th>Pro Mensal</th>
+                <th class="featured-column">Pro Anual</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Preço</strong></td>
+                <td>R$ 0</td>
+                <td>R$ 49,99/mês</td>
+                <td class="featured-column">R$ 499,90/ano<br><small>Economia de R$ 99,90</small></td>
+            </tr>
+            <tr>
+                <td><strong>Alertas/dia</strong></td>
+                <td>5 limitados</td>
+                <td>Ilimitados</td>
+                <td class="featured-column">Ilimitados</td>
+            </tr>
+            <tr>
+                <td><strong>Categorias</strong></td>
+                <td>3 básicas</td>
+                <td>Todas (10+)</td>
+                <td class="featured-column">Todas (10+)</td>
+            </tr>
+            <tr>
+                <td><strong>Velocidade</strong></td>
+                <td>Padrão</td>
+                <td>Tempo Real</td>
+                <td class="featured-column">Tempo Real</td>
+            </tr>
+            <tr>
+                <td><strong>Análises IA</strong></td>
+                <td>Não incluído</td>
+                <td>Incluído</td>
+                <td class="featured-column">Incluído</td>
+            </tr>
+            <tr>
+                <td><strong>Suporte</strong></td>
+                <td>Email</td>
+                <td>Prioritário</td>
+                <td class="featured-column">VIP + WhatsApp</td>
+            </tr>
+            <tr>
+                <td><strong>API Access</strong></td>
+                <td>Não incluído</td>
+                <td>Não incluído</td>
+                <td class="featured-column">Exclusivo</td>
+            </tr>
+            <tr>
+                <td><strong>Relatórios</strong></td>
+                <td>Não incluído</td>
+                <td>Semanais</td>
+                <td class="featured-column">Diários</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Testimonials -->
+    <div class="testimonials">
+        <h2 class="text-center mb-5">O que nossos clientes dizem</h2>
+        
+        <div class="testimonial">
+            <p class="mb-3">"Desde que upgradeei, meus investimentos rendem 40% mais. Os alertas em tempo real me deram uma vantagem competitiva incrível no mercado."</p>
+            <div class="testimonial-author">- João Silva, Day Trader profissional</div>
+        </div>
+        
+        <div class="testimonial">
+            <p class="mb-3">"A velocidade dos alertas me salvou de uma perda de R$ 50.000. O plano Pro se pagou sozinho em uma semana."</p>
+            <div class="testimonial-author">- Maria Santos, Gestora de investimentos</div>
+        </div>
+        
+        <div class="testimonial">
+            <p class="mb-3">"Consultoria financeira custa R$ 500/hora. O Pro Anual sai por apenas R$ 1,37/dia. É um investimento que vale muito a pena."</p>
+            <div class="testimonial-author">- Carlos Mendes, Investidor experiente</div>
+        </div>
+    </div>
+
+    <!-- Authority -->
+    <div class="social-proof">
+        <h4><i class="fas fa-award text-warning"></i> Recomendado por 9 em cada 10 analistas financeiros</h4>
+        <p class="mb-0">Utilizado por mais de 50.000 investidores em todo o Brasil</p>
+    </div>
+
+    <!-- Guarantee -->
+    <div class="guarantee">
+        <h4><i class="fas fa-shield-alt text-success"></i> Garantia de 30 dias ou seu dinheiro de volta</h4>
+        <p class="mb-0">Cancele quando quiser, sem burocracia. Satisfação 100% garantida.</p>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="text-center my-5">
+        <h3 class="mb-4">Digite seu objetivo financeiro para 2025:</h3>
+        <input type="text" class="form-control mb-4" style="max-width: 500px; margin: 0 auto;" placeholder="Ex: Ganhar R$ 100.000 no mercado de ações">
+        
+        <div class="mt-4">
+            {% if user %}
+            <button onclick="redirectToStripe('pro_annual')" class="btn btn-success btn-lg mr-3" style="margin-right: 15px;">
+                QUERO SER PRO AGORA
+            </button>
+            <button onclick="redirectToStripe('pro_annual')" class="btn btn-warning btn-lg mr-3" style="margin-right: 15px;">
+                GARANTIR MINHA VANTAGEM
+            </button>
+            <button onclick="redirectToStripe('pro_monthly')" class="btn btn-primary btn-lg">
+                ATIVAR ALERTAS ILIMITADOS
+            </button>
+            {% else %}
+            <button onclick="redirectToStripe('pro_annual')" class="btn btn-success btn-lg mr-3" style="margin-right: 15px;">
+                CADASTRAR GRÁTIS
+            </button>
+            <button onclick="redirectToStripe('pro_annual')" class="btn btn-warning btn-lg mr-3" style="margin-right: 15px;">
+                COMEÇAR TESTE GRATUITO
+            </button>
+            <button onclick="redirectToStripe('pro_monthly')" class="btn btn-primary btn-lg">
+                ATIVAR ALERTAS AGORA
+            </button>
+            {% endif %}
+        </div>
+        
+        <div class="mt-3">
+            <a href="/dashboard" class="btn btn-outline-secondary btn-sm mr-3">Ver demonstração gratuita</a>
+            <a href="mailto:contato@geoeco.news" class="btn btn-outline-secondary btn-sm mr-3">Falar com especialista</a>
+            <a href="#" class="btn btn-outline-secondary btn-sm">Comparar com concorrentes</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Countdown Timer
+function updateCountdown() {
+    const now = new Date().getTime();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const distance = tomorrow - now;
+    
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    document.getElementById("countdown").innerHTML = 
+        String(hours).padStart(2, '0') + ":" + 
+        String(minutes).padStart(2, '0') + ":" + 
+        String(seconds).padStart(2, '0');
+}
+
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// Stripe Checkout Function
+function redirectToStripe(planType) {
+    {% if not user %}
+        // Store intended plan and redirect to signup
+        sessionStorage.setItem('intended_plan', planType);
+        window.location.href = '/signup?next=/pricing&plan=' + planType;
+    {% else %}
+        // Create checkout session for authenticated users
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/create-checkout-session';
+        
+        const planInput = document.createElement('input');
+        planInput.type = 'hidden';
+        planInput.name = 'plan_type';
+        planInput.value = planType;
+        
+        form.appendChild(planInput);
+        document.body.appendChild(form);
+        form.submit();
+    {% endif %}
+}
+
+// Handle login redirect with plan parameter
+window.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const planParam = urlParams.get('plan');
+    
+    if (planParam && typeof redirectToStripe === 'function') {
+        // Auto-trigger checkout if user just logged in with a plan parameter
+        setTimeout(() => redirectToStripe(planParam), 500);
+    }
+});
+</script>
+{% endblock %}
