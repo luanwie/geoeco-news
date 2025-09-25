@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Depends, HTTPException, Form, status
+from fastapi import FastAPI, Request, Depends, HTTPException, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -13,48 +13,54 @@ import threading
 from apscheduler.schedulers.background import BackgroundScheduler
 from pathlib import Path
 
-from models import get_db, create_tables, User, UserCategory, Alert, NewsItem
-from scraper import run_news_scraper
-from whatsapp import send_whatsapp_alert, validate_brazilian_phone
+# IMPORTS RELATIVOS (essencial para rodar como pacote)
+from .models import get_db, create_tables, User, UserCategory, Alert, NewsItem
+from .scraper import run_news_scraper
+from .whatsapp import send_whatsapp_alert, validate_brazilian_phone
 
-# Background scheduler for news scraping
+# Scheduler em background
 scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create database tables on startup
+    # cria tabelas
     create_tables()
 
-    # Start the background scheduler for news scraping
+    # agenda o pipeline a cada 15min
     scheduler.add_job(
         func=process_alerts_pipeline,
         trigger="interval",
         minutes=15,
         id="news_scraper",
-        name="News Scraper and Alert Processor"
+        name="News Scraper and Alert Processor",
+        max_instances=1,
+        coalesce=True,
+        misfire_grace_time=60,
     )
     scheduler.start()
-    print("Background scheduler started for news scraping every 15 minutes")
+    print("Background scheduler iniciado (15 min).")
 
-    # Run initial scrape
+    # primeiro disparo assíncrono
     threading.Thread(target=process_alerts_pipeline, daemon=True).start()
 
     yield
 
-    # Cleanup on shutdown
     scheduler.shutdown()
 
 app = FastAPI(title="News Alert SaaS", lifespan=lifespan)
 
-# --- Paths corretos para static e templates ---
-BASE_DIR = Path(__file__).parent  # TrendWatchAI/app
-app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+# --- Paths corretos para static/ e templates/ ---
+BASE_DIR = Path(__file__).resolve().parent          # TrendWatchAI/app
+STATIC_DIR = BASE_DIR / "static"
+TEMPLATES_DIR = BASE_DIR / "templates"
+
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# JWT settings
+# JWT
 SECRET_KEY = os.getenv("SESSION_SECRET")
 if not SECRET_KEY:
     raise ValueError("SESSION_SECRET environment variable is required")
@@ -71,8 +77,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 def get_current_user(request: Request, db: Session = Depends(get_db)):
     token = request.cookies.get("access_token")
@@ -85,8 +90,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
             return None
     except JWTError:
         return None
-    user = db.query(User).filter(User.email == email).first()
-    return user
+    return db.query(User).filter(User.email == email).first()
 
 def require_auth(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
@@ -101,22 +105,18 @@ def get_current_user_optional(request: Request, db: Session = Depends(get_db)) -
         return None
 
 def process_alerts_pipeline():
-    """Background task to scrape news and send alerts to users"""
+    """Scrape notícias, cria alerts e envia WhatsApp para usuários elegíveis."""
     try:
-        # Run news scraper
         run_news_scraper()
 
-        # Process unprocessed news items and send alerts
         db = next(get_db())
 
-        # Get unprocessed high-impact news
         unprocessed_news = db.query(NewsItem).filter(
             NewsItem.processed == False,
-            NewsItem.impact_score >= 2  # High impact requirement
+            NewsItem.impact_score >= 2
         ).all()
 
         for news_item in unprocessed_news:
-            # Get users interested in this category with active plans
             users_query = db.query(User, UserCategory).join(
                 UserCategory, User.id == UserCategory.user_id
             ).filter(
@@ -127,13 +127,13 @@ def process_alerts_pipeline():
                 (User.plan != "free") | (User.trial_expires > datetime.utcnow())
             )
 
-            for user, category in users_query.all():
+            for user, _ in users_query.all():
                 try:
-                    existing_alert = db.query(Alert).filter(
+                    exists = db.query(Alert).filter(
                         Alert.user_id == user.id,
                         Alert.news_url == news_item.url
                     ).first()
-                    if existing_alert:
+                    if exists:
                         continue
 
                     alert = Alert(
@@ -153,24 +153,20 @@ def process_alerts_pipeline():
                         news_url=str(news_item.url),
                         published_time=news_item.published_at
                     )
-
-                    if success:
-                        print(f"Alert sent to user {user.email} for news: {news_item.title[:50]}...")
-                    else:
-                        print(f"Failed to send alert to user {user.email}")
-
+                    print(
+                        f"{'OK' if success else 'FAIL'} enviar alert para {user.email} | {news_item.title[:50]}..."
+                    )
                 except Exception as e:
-                    print(f"Error sending alert to user {user.email}: {e}")
+                    print(f"Erro ao enviar alert p/ {user.email}: {e}")
                     continue
 
             db.query(NewsItem).filter(NewsItem.id == news_item.id).update({"processed": True})
 
         db.commit()
         db.close()
-        print(f"Processed {len(unprocessed_news)} news items")
-
+        print(f"Processadas {len(unprocessed_news)} notícias.")
     except Exception as e:
-        print(f"Error in alert processing pipeline: {e}")
+        print(f"Erro no pipeline de alerts: {e}")
 
 @app.get("/", response_class=HTMLResponse)
 async def landing_page(request: Request):
@@ -181,9 +177,7 @@ async def signup_page(request: Request):
     next_url = request.query_params.get('next', '/dashboard')
     plan = request.query_params.get('plan', '')
     return templates.TemplateResponse("signup.html", {
-        "request": request,
-        "next_url": next_url,
-        "plan": plan
+        "request": request, "next_url": next_url, "plan": plan
     })
 
 @app.post("/signup")
@@ -224,19 +218,12 @@ async def signup(
     db.commit()
     db.refresh(user)
 
-    categories = UserCategory(
-        user_id=user.id,
-        economy=True,
-        geopolitics=True,
-        markets=True
-    )
+    categories = UserCategory(user_id=user.id, economy=True, geopolitics=True, markets=True)
     db.add(categories)
     db.commit()
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
+    access_token = create_access_token(data={"sub": user.email},
+                                       expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
 
     allowed_redirects = ['/dashboard', '/pricing', '/settings']
     safe_next = next if next in allowed_redirects else '/dashboard'
@@ -244,13 +231,7 @@ async def signup(
 
     is_dev = os.getenv('REPLIT_DEV_DOMAIN') is not None or 'localhost' in request.headers.get('host', '')
     response = RedirectResponse(url=redirect_url, status_code=303)
-    response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        secure=not is_dev,
-        samesite="lax"
-    )
+    response.set_cookie("access_token", access_token, httponly=True, secure=not is_dev, samesite="lax")
     return response
 
 @app.get("/login", response_class=HTMLResponse)
@@ -258,9 +239,7 @@ async def login_page(request: Request):
     next_url = request.query_params.get('next', '/dashboard')
     plan = request.query_params.get('plan', '')
     return templates.TemplateResponse("login.html", {
-        "request": request,
-        "next_url": next_url,
-        "plan": plan
+        "request": request, "next_url": next_url, "plan": plan
     })
 
 @app.post("/login")
@@ -279,10 +258,8 @@ async def login(
             {"request": request, "error": "Invalid email or password", "next_url": next, "plan": plan}
         )
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
+    access_token = create_access_token(data={"sub": user.email},
+                                       expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
 
     allowed_redirects = ['/dashboard', '/pricing', '/settings']
     safe_next = next if next in allowed_redirects else '/dashboard'
@@ -290,13 +267,7 @@ async def login(
 
     is_dev = os.getenv('REPLIT_DEV_DOMAIN') is not None or 'localhost' in request.headers.get('host', '')
     response = RedirectResponse(url=redirect_url, status_code=303)
-    response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        secure=not is_dev,
-        samesite="lax"
-    )
+    response.set_cookie("access_token", access_token, httponly=True, secure=not is_dev, samesite="lax")
     return response
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -325,9 +296,7 @@ async def dashboard(request: Request, user: User = Depends(require_auth), db: Se
 async def settings_page(request: Request, user: User = Depends(require_auth), db: Session = Depends(get_db)):
     categories = db.query(UserCategory).filter(UserCategory.user_id == user.id).first()
     return templates.TemplateResponse("settings.html", {
-        "request": request,
-        "user": user,
-        "categories": categories
+        "request": request, "user": user, "categories": categories
     })
 
 @app.post("/settings")
@@ -354,17 +323,10 @@ async def update_settings(
     categories = db.query(UserCategory).filter(UserCategory.user_id == user.id).first()
     if categories:
         db.query(UserCategory).filter(UserCategory.user_id == user.id).update({
-            "economy": economy,
-            "geopolitics": geopolitics,
-            "markets": markets
+            "economy": economy, "geopolitics": geopolitics, "markets": markets
         })
     else:
-        categories = UserCategory(
-            user_id=user.id,
-            economy=economy,
-            geopolitics=geopolitics,
-            markets=markets
-        )
+        categories = UserCategory(user_id=user.id, economy=economy, geopolitics=geopolitics, markets=markets)
         db.add(categories)
 
     db.commit()
@@ -373,21 +335,14 @@ async def update_settings(
 @app.get("/logout")
 async def logout():
     response = RedirectResponse(url="/", status_code=303)
-    response.delete_cookie(
-        key="access_token",
-        secure=True,
-        samesite="lax"
-    )
+    response.delete_cookie(key="access_token", secure=True, samesite="lax")
     return response
 
 @app.get("/pricing", response_class=HTMLResponse)
 async def pricing_page(request: Request, user: User = Depends(get_current_user_optional), db: Session = Depends(get_db)):
-    return templates.TemplateResponse("pricing.html", {
-        "request": request,
-        "user": user
-    })
+    return templates.TemplateResponse("pricing.html", {"request": request, "user": user})
 
-# Stripe integration routes
+# Stripe
 @app.post("/create-checkout-session")
 async def create_checkout_session(
     request: Request,
@@ -395,46 +350,33 @@ async def create_checkout_session(
     user: User = Depends(require_auth),
     db: Session = Depends(get_db)
 ):
-    """Create Stripe checkout session for Pro subscription"""
     import stripe
     stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-
     if not stripe.api_key:
         return RedirectResponse(url="/dashboard?error=stripe_not_configured", status_code=303)
 
     prices = {
         "pro_monthly": os.getenv("STRIPE_PRICE_MONTHLY", "price_1234_monthly"),
-        "pro_annual": os.getenv("STRIPE_PRICE_ANNUAL", "price_1234_annual")
+        "pro_annual": os.getenv("STRIPE_PRICE_ANNUAL", "price_1234_annual"),
     }
 
     try:
-        # Usa o host da requisição (Render) para montar as URLs de retorno
         host = request.headers.get("host", "localhost:5000")
         base_url = f"https://{host}"
 
         if not user.stripe_customer_id:
-            customer = stripe.Customer.create(
-                email=str(user.email),
-                name=str(user.name),
-                phone=str(user.phone)
-            )
+            customer = stripe.Customer.create(email=str(user.email), name=str(user.name), phone=str(user.phone))
             db.query(User).filter(User.id == user.id).update({"stripe_customer_id": customer.id})
             db.commit()
             user.stripe_customer_id = customer.id
 
         checkout_session = stripe.checkout.Session.create(
             customer=str(user.stripe_customer_id),
-            line_items=[{
-                'price': prices.get(plan_type, prices["pro_monthly"]),
-                'quantity': 1,
-            }],
-            mode='subscription',
-            success_url=f'{base_url}/dashboard?payment=success',
-            cancel_url=f'{base_url}/dashboard?payment=cancelled',
-            metadata={
-                'user_id': str(user.id),
-                'plan_type': plan_type
-            }
+            line_items=[{"price": prices.get(plan_type, prices["pro_monthly"]), "quantity": 1}],
+            mode="subscription",
+            success_url=f"{base_url}/dashboard?payment=success",
+            cancel_url=f"{base_url}/dashboard?payment=cancelled",
+            metadata={"user_id": str(user.id), "plan_type": plan_type},
         )
         return RedirectResponse(url=checkout_session.url, status_code=303)
     except Exception as e:
@@ -443,44 +385,39 @@ async def create_checkout_session(
 
 @app.post("/stripe/webhook")
 async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
-    """Handle Stripe webhook events"""
     import stripe
 
     stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
     webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
     payload = await request.body()
-    sig_header = request.headers.get('stripe-signature')
+    sig_header = request.headers.get("stripe-signature")
 
     try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, webhook_secret
-        )
+        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid payload")
     except stripe.error.SignatureVerificationError:
         raise HTTPException(status_code=400, detail="Invalid signature")
 
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        user_id = session['metadata'].get('user_id')
-        plan_type = session['metadata'].get('plan_type')
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        user_id = session["metadata"].get("user_id")
+        plan_type = session["metadata"].get("plan_type")
 
         if user_id:
             user = db.query(User).filter(User.id == int(user_id)).first()
             if user:
-                plan_value = 'pro_annual' if plan_type == 'pro_annual' else 'pro'
+                plan_value = "pro_annual" if plan_type == "pro_annual" else "pro"
                 db.query(User).filter(User.id == user.id).update({
-                    "plan": plan_value,
-                    "stripe_customer_id": session['customer']
+                    "plan": plan_value, "stripe_customer_id": session["customer"]
                 })
                 db.commit()
                 print(f"Updated user {user.email} to plan {plan_value}")
 
-    elif event['type'] == 'customer.subscription.deleted':
-        subscription = event['data']['object']
-        customer_id = subscription['customer']
-
+    elif event["type"] == "customer.subscription.deleted":
+        subscription = event["data"]["object"]
+        customer_id = subscription["customer"]
         user = db.query(User).filter(User.stripe_customer_id == customer_id).first()
         if user:
             db.query(User).filter(User.id == user.id).update({"plan": "free"})
@@ -489,7 +426,7 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
 
     return {"status": "success"}
 
-# Healthcheck para facilitar debug no Render
+# Healthcheck
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok"}
