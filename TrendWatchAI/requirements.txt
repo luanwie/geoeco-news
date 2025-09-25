@@ -9,3 +9,4 @@ sqlalchemy==1.4.53
 passlib==1.7.4
 bcrypt==4.0.1
 python-jose[cryptography]==3.3.0
+gunicorn==21.2.0
